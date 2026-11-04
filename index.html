@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -19,7 +20,12 @@
 body {
     font-family: Arial, sans-serif;
     min-height: 100vh;
-    background: radial-gradient(circle at top, #20202a 0%, #0b0b0f 45%, #050507 100%);
+    background: radial-gradient(
+        circle at top,
+        #20202a 0%,
+        #0b0b0f 45%,
+        #050507 100%
+    );
     color: #fff;
 }
 
@@ -67,7 +73,7 @@ body {
     margin-bottom: 18px;
 }
 
-/* VIDEO PLAYER */
+/* IMAGE PLAYER */
 .player-box {
     position: relative;
     width: 100%;
@@ -77,16 +83,46 @@ body {
     background: #000;
     border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0,0,0,.55);
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.55),
+        0 0 0 1px rgba(255,255,255,.08);
 }
 
-.player-box iframe {
-    position: absolute;
-    inset: 0;
+.video-thumbnail {
     width: 100%;
     height: 100%;
-    border: 0;
-    background: #000;
+    display: block;
+    object-fit: cover;
+}
+
+/* DARK OVERLAY */
+.player-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.20);
+}
+
+/* PLAY BUTTON */
+.thumbnail-play {
+    width: 78px;
+    height: 78px;
+    border: none;
+    border-radius: 50%;
+    background: #ff1744;
+    color: white;
+    font-size: 30px;
+    padding-left: 5px;
+    cursor: pointer;
+    box-shadow: 0 8px 35px rgba(255,23,68,.5);
+    transition: .25s;
+}
+
+.thumbnail-play:hover {
+    transform: scale(1.1);
+    background: #ff3158;
 }
 
 /* INFO */
@@ -155,7 +191,6 @@ body {
 
 .action-btn.primary:hover {
     background: #ff3158;
-    transform: translateY(-2px);
 }
 
 .action-btn:hover {
@@ -211,6 +246,12 @@ body {
         border-radius: 12px;
     }
 
+    .thumbnail-play {
+        width: 65px;
+        height: 65px;
+        font-size: 25px;
+    }
+
     .title {
         font-size: 21px;
     }
@@ -247,18 +288,25 @@ body {
         Home / Videos / Watch
     </div>
 
-    <!-- EXASTREAM PLAYER -->
+    <!-- JPG VIDEO THUMBNAIL -->
     <div class="player-box">
 
-        <iframe
-            id="exaPlayer"
-            src="https://trbnvideo.live/e/h4WF6bHt"
-            title="ExaStream Video Player"
-            allow="autoplay; fullscreen; picture-in-picture"
-            allowfullscreen
-            frameborder="0"
-            scrolling="no">
-        </iframe>
+        <img
+            src="https://i.ibb.co.com/9HjG616w/Screenshot-20260927-071513-3.jpg"
+            alt="Video Thumbnail"
+            class="video-thumbnail"
+        >
+
+        <div class="player-overlay">
+
+            <button
+                class="thumbnail-play"
+                onclick="playWithAdsterra()"
+                aria-label="Play Video">
+                ▶
+            </button>
+
+        </div>
 
     </div>
 
@@ -293,6 +341,12 @@ body {
 
         <button
             class="action-btn"
+            onclick="openSmartlink()">
+            ✨ PREMIUM
+        </button>
+
+        <button
+            class="action-btn"
             onclick="sharePage()">
             ↗ SHARE
         </button>
@@ -316,8 +370,8 @@ body {
 
     <!-- NOTICE -->
     <div class="notice">
-        Tekan tombol PLAY VIDEO untuk membuka halaman iklan.
-        Setelah itu, kembali ke halaman ini untuk menikmati video.
+        Tekan tombol PLAY VIDEO untuk membuka halaman promosi.
+        Thumbnail ini merupakan gambar JPG, bukan pemutar video.
     </div>
 
 </main>
@@ -331,27 +385,22 @@ body {
 const SMARTLINK =
 "https://www.profitableratecpmnetwork.com/agijdjkf?key=b68403d796344c04660419b144a9cea4";
 
-/* ===================================
-   EXASTREAM
-   =================================== */
-
-const EXASTREAM_URL =
-"https://trbnvideo.live/e/h4WF6bHt";
-
-/* PLAY VIDEO + OPEN SMARTLINK */
+/* PLAY BUTTON */
 
 function playWithAdsterra() {
 
     const adWindow = window.open(
         SMARTLINK,
-        "_blank"
+        "_blank",
+        "noopener,noreferrer"
     );
 
     if (!adWindow) {
         alert(
-            "Popup diblokir browser. Izinkan popup untuk membuka iklan."
+            "Popup diblokir browser. Silakan izinkan popup."
         );
     }
+
 }
 
 /* PREMIUM BUTTON */
@@ -360,7 +409,8 @@ function openSmartlink() {
 
     window.open(
         SMARTLINK,
-        "_blank"
+        "_blank",
+        "noopener,noreferrer"
     );
 
 }
@@ -380,7 +430,7 @@ async function sharePage() {
             });
 
         } catch (error) {
-            // Share dibatalkan pengguna
+            // Share dibatalkan
         }
 
     } else {
