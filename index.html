@@ -273,100 +273,122 @@ footer{
 }
 footer strong{color:var(--gold)}
 
-/* --- STYLING IN-PAGE PUSH (MELAYANG DI POJOK) --- */
+/* --- STYLING IN-PAGE PUSH (MENUTUPI VIDEO DI TENGAH) --- */
 .inp-push-container {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  inset: 0;
   z-index: 99999;
-  width: 320px;
-  max-width: calc(100vw - 40px);
+  background: rgba(4, 8, 15, 0.85); /* Backdrop gelap transparan menutupi layar */
+  backdrop-filter: blur(4px);
   display: none;
-  animation: slideInUp 0.3s ease-out forwards;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
 .inp-push-container.show {
-  display: block;
+  display: flex;
 }
 
-@keyframes slideInUp {
-  from {
-    transform: translateY(50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .inp-push-box {
   background: linear-gradient(145deg, #17243a, #090e18);
   border: 1px solid var(--gold);
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
   display: flex;
-  gap: 12px;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
   position: relative;
   cursor: pointer;
+  animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 .inp-push-close {
   position: absolute;
-  top: 6px;
-  right: 8px;
+  top: 10px;
+  right: 12px;
   border: 0;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.1);
   color: var(--muted);
-  font-size: 18px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 16px;
   cursor: pointer;
   z-index: 10;
+  display: grid;
+  place-items: center;
 }
 .inp-push-close:hover {
+  background: rgba(255, 255, 255, 0.2);
   color: white;
 }
 
 .inp-push-thumb {
-  width: 65px;
-  height: 65px;
-  border-radius: 8px;
+  width: 100%;
+  height: 160px;
+  border-radius: 10px;
   object-fit: cover;
-  flex-shrink: 0;
+  margin-bottom: 14px;
   border: 1px solid var(--border);
 }
 
 .inp-push-content {
-  flex: 1;
-  padding-right: 15px;
+  width: 100%;
 }
 
 .inp-push-badge {
   display: inline-block;
   background: var(--gold);
   color: #111;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: bold;
-  padding: 2px 6px;
+  padding: 3px 8px;
   border-radius: 4px;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   letter-spacing: 0.5px;
 }
 
 .inp-push-title {
   color: var(--gold2);
-  font-size: 12px;
+  font-size: 15px;
   font-weight: bold;
-  margin: 0 0 3px;
-  line-height: 1.3;
+  margin: 0 0 6px;
+  line-height: 1.35;
 }
 
 .inp-push-desc {
   color: #c2c9d4;
-  font-size: 10px;
-  margin: 0;
-  line-height: 1.4;
+  font-size: 12px;
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.inp-push-btn {
+  background: var(--gold);
+  color: #111;
+  border: none;
+  width: 100%;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 13px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 @media(max-width:850px){
@@ -465,7 +487,7 @@ footer strong{color:var(--gold)}
   © 2026 PLAY STREAM. All Rights Reserved.
 </footer>
 
-<!-- WIDGET IN-PAGE PUSH (MELAYANG DI ATAS BAWAH) -->
+<!-- WIDGET IN-PAGE PUSH (DI TENGAH MENUTUPI LAYAR / VIDEO) -->
 <div class="inp-push-container" id="inpPushContainer">
   <div class="inp-push-box" onclick="clickInPagePush()">
     <button class="inp-push-close" onclick="closeInPagePush(event)" aria-label="Tutup">&times;</button>
@@ -474,6 +496,7 @@ footer strong{color:var(--gold)}
       <span class="inp-push-badge">SPONSORED</span>
       <h4 class="inp-push-title">Penawaran Eksklusif</h4>
       <p class="inp-push-desc">Ketuk di sini untuk melihat info menarik dari sponsor kami.</p>
+      <button class="inp-push-btn">LIHAT SEKARANG</button>
     </div>
   </div>
 </div>
@@ -742,16 +765,11 @@ function clickInPagePush(){
 renderVideos();
 
 if(videos.length > 0){
-  // Mengatur pemutar utama agar langsung memuat video ID 1 saat pertama kali dibuka
   const firstVideo = videos[0];
   currentVideo = firstVideo;
   document.getElementById("videoPlayer").src = firstVideo.url;
   document.getElementById("playerTitle").textContent = firstVideo.title;
   document.getElementById("playerNumber").textContent = "VIDEO " + String(firstVideo.id).padStart(2, "0");
-  
-  // Jika Anda ingin timer In-Page Push langsung berjalan 10 detik sejak halaman terbuka, aktifkan baris di bawah:
-  // videoSelected = true;
-  // schedulePush();
 }
 </script>
 
