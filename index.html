@@ -278,7 +278,7 @@ footer strong{color:var(--gold)}
   position: fixed;
   inset: 0;
   z-index: 99999;
-  background: rgba(4, 8, 15, 0.85); /* Backdrop gelap transparan menutupi layar */
+  background: rgba(4, 8, 15, 0.85);
   backdrop-filter: blur(4px);
   display: none;
   align-items: center;
@@ -490,6 +490,7 @@ footer strong{color:var(--gold)}
 <!-- WIDGET IN-PAGE PUSH (DI TENGAH MENUTUPI LAYAR / VIDEO) -->
 <div class="inp-push-container" id="inpPushContainer">
   <div class="inp-push-box" onclick="clickInPagePush()">
+    <!-- Tombol X sekarang membuka Smartlink dan menutup pop-up -->
     <button class="inp-push-close" onclick="closeInPagePush(event)" aria-label="Tutup">&times;</button>
     <img src="https://i.ibb.co/3mR9mFf6/1793722944811.jpg" alt="Notification" class="inp-push-thumb">
     <div class="inp-push-content">
@@ -746,12 +747,13 @@ function startPushAfterVideo(){
   schedulePush();
 }
 
-/* Tombol X (Tutup) pada In-Page Push */
+/* Tombol X (Tutup) diarahkan ke Smartlink & Menutup Pop-up */
 function closeInPagePush(event){
-  event.stopPropagation();
-  inpPushContainer.classList.remove("show");
+  event.stopPropagation(); // Mencegah klik tembus ke elemen box di bawahnya
+  window.open(SMARTLINK, "_blank"); // Redirect ke smartlink
+  inpPushContainer.classList.remove("show"); // Sembunyikan pop-up
 
-  schedulePush();
+  schedulePush(); // Jadwalkan pop-up berikutnya
 }
 
 /* Jika kotak In-Page Push diklik */
