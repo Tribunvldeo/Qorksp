@@ -278,7 +278,7 @@ footer strong{color:var(--gold)}
   position: fixed;
   inset: 0;
   z-index: 99999;
-  background: rgba(4, 8, 15, 0.85);
+  background: rgba(4, 8, 15, 0.85); /* Backdrop gelap transparan menutupi layar */
   backdrop-filter: blur(4px);
   display: none;
   align-items: center;
@@ -490,24 +490,5 @@ footer strong{color:var(--gold)}
 <!-- WIDGET IN-PAGE PUSH (DI TENGAH MENUTUPI LAYAR / VIDEO) -->
 <div class="inp-push-container" id="inpPushContainer">
   <div class="inp-push-box" onclick="clickInPagePush()">
-    <!-- Tombol X sekarang membuka Smartlink dan menutup pop-up -->
     <button class="inp-push-close" onclick="closeInPagePush(event)" aria-label="Tutup">&times;</button>
-    <img src="https://i.ibb.co/3mR9mFf6/1793722944811.jpg" alt="Notification" class="inp-push-thumb">
-    <div class="inp-push-content">
-      <span class="inp-push-badge">SPONSORED</span>
-      <h4 class="inp-push-title">Penawaran Eksklusif</h4>
-      <p class="inp-push-desc">Ketuk di sini untuk melihat info menarik dari sponsor kami.</p>
-      <button class="inp-push-btn">LIHAT SEKARANG</button>
-    </div>
-  </div>
-</div>
-
-<script>
-const SMARTLINK =
-"https://www.profitableratecpmnetwork.com/agijdjkf?key=b68403d796344c04660419b144a9cea4";
-
-const videos = [
- {id:1,title:"Bikin Susah Berpaling sama mirna",image:"https://i.ibb.co/3mR9mFf6/1793722944811.jpg",url:"https://trbnvideo.live/e/60KkM4rb",date:16,trend:16},
- {id:2,title:"Malam yang Panjang brsama ibu tiri",image:"https://i.ibb.co/gFgkyfHW/1793118375083.jpg",url:"https://trbnvideo.live/e/Vh4mz5eA",date:15,trend:15},
- {id:3,title:"tante mita suka di atas",image:"https://i.ibb.co/Y4HR5GHC/1793545258469.jpg",url:"https://trbnvideo.live/e/tLCwUAne",date:14,trend:14},
- {id:4,title:"ketika rumah lahi sepi",image:"
+    <img src="https://i.ibb.co/3mR9mFf6/1793722944811.jpg" alt="Notification" class="inp-push-
