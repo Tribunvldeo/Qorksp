@@ -273,76 +273,100 @@ footer{
 }
 footer strong{color:var(--gold)}
 
-/* POPUP PENAWARAN */
-.push-overlay{
-  position:fixed;
-  inset:0;
-  z-index:99999;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-  background:rgba(0,0,0,.76);
+/* --- STYLING IN-PAGE PUSH (MELAYANG DI POJOK) --- */
+.inp-push-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 99999;
+  width: 320px;
+  max-width: calc(100vw - 40px);
+  display: none;
+  animation: slideInUp 0.3s ease-out forwards;
 }
-.push-overlay.show{display:flex}
-.push-box{
-  width:100%;
-  max-width:360px;
-  position:relative;
-  background:linear-gradient(145deg,#17243a,#090e18);
-  border:1px solid var(--gold);
-  border-radius:17px;
-  padding:25px 20px 20px;
-  text-align:center;
-  box-shadow:0 15px 60px rgba(0,0,0,.7);
+
+.inp-push-container.show {
+  display: block;
 }
-.push-close{
-  position:absolute;
-  top:9px;
-  right:12px;
-  border:0;
-  background:transparent;
-  color:white;
-  font-size:25px;
-  cursor:pointer;
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
-.push-icon{
-  width:53px;height:53px;
-  display:grid;
-  place-items:center;
-  border-radius:50%;
-  margin:0 auto 13px;
-  background:linear-gradient(135deg,var(--gold2),#9b7025);
-  color:#111;
-  font-size:24px;
+
+.inp-push-box {
+  background: linear-gradient(145deg, #17243a, #090e18);
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
 }
-.push-box h3{color:var(--gold2);font-size:19px;margin:0 0 9px}
-.push-box p{
-  color:#c2c9d4;
-  font-size:12px;
-  line-height:1.6;
-  margin:0 0 17px;
+
+.inp-push-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 10;
 }
-.offer-btn{
-  width:100%;
-  padding:13px;
-  border:0;
-  border-radius:9px;
-  background:linear-gradient(135deg,var(--gold2),#b48635);
-  color:#15100a;
-  font-weight:bold;
-  cursor:pointer;
+.inp-push-close:hover {
+  color: white;
 }
-.push-note{
-  display:block;
-  color:#8792a4;
-  font-size:10px;
-  margin-top:12px;
+
+.inp-push-thumb {
+  width: 65px;
+  height: 65px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
 }
-.push-counter{
-  color:var(--gold);
-  font-size:10px;
-  margin-top:10px;
+
+.inp-push-content {
+  flex: 1;
+  padding-right: 15px;
+}
+
+.inp-push-badge {
+  display: inline-block;
+  background: var(--gold);
+  color: #111;
+  font-size: 9px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.inp-push-title {
+  color: var(--gold2);
+  font-size: 12px;
+  font-weight: bold;
+  margin: 0 0 3px;
+  line-height: 1.3;
+}
+
+.inp-push-desc {
+  color: #c2c9d4;
+  font-size: 10px;
+  margin: 0;
+  line-height: 1.4;
 }
 
 @media(max-width:850px){
@@ -441,16 +465,16 @@ footer strong{color:var(--gold)}
   © 2026 PLAY STREAM. All Rights Reserved.
 </footer>
 
-<!-- POPUP PENAWARAN -->
-<div class="push-overlay" id="pushOverlay">
-  <div class="push-box">
-    <button class="push-close" onclick="closePush()" aria-label="Tutup">&times;</button>
-    <div class="push-icon">★</div>
-    <h3>Penawaran Spesial</h3>
-    <p>Temukan penawaran menarik dari sponsor kami. Klik tombol di bawah jika ingin melihat penawaran.</p>
-    <button class="offer-btn" onclick="openOffer()">LIHAT PENAWARAN</button>
-    <span class="push-note">Penawaran sponsor • Bisa ditutup kapan saja</span>
-    <div class="push-counter" id="pushCounter">Penawaran 1 dari 5</div>
+<!-- WIDGET IN-PAGE PUSH (MELAYANG DI POJOK) -->
+<div class="inp-push-container" id="inpPushContainer">
+  <div class="inp-push-box" onclick="clickInPagePush()">
+    <button class="inp-push-close" onclick="closeInPagePush(event)" aria-label="Tutup">&times;</button>
+    <img src="https://i.ibb.co/3mR9mFf6/1793722944811.jpg" alt="Notification" class="inp-push-thumb">
+    <div class="inp-push-content">
+      <span class="inp-push-badge">SPONSORED</span>
+      <h4 class="inp-push-title">Penawaran Eksklusif</h4>
+      <p class="inp-push-desc">Ketuk di sini untuk melihat info menarik dari sponsor kami.</p>
+    </div>
   </div>
 </div>
 
@@ -618,7 +642,7 @@ function playVideo(id){
     block:"start"
   });
 
-  // Setiap video baru dimulai dengan jatah 5 popup.
+  // Mulai sistem In-Page Push setelah video diputar
   startPushAfterVideo();
 }
 
@@ -661,27 +685,22 @@ function fullscreenPlayer(){
   }
 }
 
-/* POPUP: MAKSIMAL 5 KALI PER VIDEO */
-const pushOverlay=document.getElementById("pushOverlay");
-const pushCounter=document.getElementById("pushCounter");
+/* LOGIKA IN-PAGE PUSH: MAKSIMAL 5 KALI PER VIDEO (JEDA 10 DETIK) */
+const inpPushContainer=document.getElementById("inpPushContainer");
 
 const MAX_POPUPS=5;
-const POPUP_DELAY=5000;
+const POPUP_DELAY=10000; // 10 detik
 
 let pushTimer=null;
 let videoSelected=false;
 let popupCount=0;
 
-function showPush(){
+function showInPagePush(){
   if(!videoSelected)return;
   if(popupCount>=MAX_POPUPS)return;
 
   popupCount++;
-
-  pushCounter.textContent=
-    "Penawaran "+popupCount+" dari "+MAX_POPUPS;
-
-  pushOverlay.classList.add("show");
+  inpPushContainer.classList.add("show");
 }
 
 function schedulePush(){
@@ -690,50 +709,50 @@ function schedulePush(){
   if(!videoSelected)return;
   if(popupCount>=MAX_POPUPS)return;
 
-  pushTimer=setTimeout(showPush,POPUP_DELAY);
+  pushTimer=setTimeout(showInPagePush, POPUP_DELAY);
 }
 
 function startPushAfterVideo(){
   clearTimeout(pushTimer);
 
-  // Reset jatah popup saat video dipilih.
   popupCount=0;
   videoSelected=true;
 
-  pushOverlay.classList.remove("show");
+  inpPushContainer.classList.remove("show");
 
   schedulePush();
 }
 
-/* X SEKARANG JUGA MEMBUKA SMARTLINK */
-function closePush(){
-  // Smartlink dibuka karena pengunjung menekan tombol X.
-  window.open(SMARTLINK,"_blank");
-
-  pushOverlay.classList.remove("show");
-
-  // Jadwalkan popup berikutnya jika jatah belum habis.
-  schedulePush();
-}
-
-/* TOMBOL LIHAT PENAWARAN */
-function openOffer(){
-  window.open(SMARTLINK,"_blank");
-
-  pushOverlay.classList.remove("show");
+/* Tombol X (Tutup) pada In-Page Push */
+function closeInPagePush(event){
+  event.stopPropagation();
+  inpPushContainer.classList.remove("show");
 
   schedulePush();
 }
 
-/* KLIK AREA LUAR POPUP */
-pushOverlay.addEventListener("click",function(event){
-  if(event.target===pushOverlay){
-    pushOverlay.classList.remove("show");
-    schedulePush();
-  }
-});
+/* Jika kotak In-Page Push diklik */
+function clickInPagePush(){
+  window.open(SMARTLINK, "_blank");
+  inpPushContainer.classList.remove("show");
+  schedulePush();
+}
 
+/* MEMUAT DAFTAR VIDEO DAN LANGSUNG MEMUAT VIDEO PERTAMA PADA PEMUTAR UTAMA */
 renderVideos();
+
+if(videos.length > 0){
+  // Mengatur pemutar utama agar langsung memuat video ID 1 saat pertama kali dibuka
+  const firstVideo = videos[0];
+  currentVideo = firstVideo;
+  document.getElementById("videoPlayer").src = firstVideo.url;
+  document.getElementById("playerTitle").textContent = firstVideo.title;
+  document.getElementById("playerNumber").textContent = "VIDEO " + String(firstVideo.id).padStart(2, "0");
+  
+  // Jika Anda ingin timer In-Page Push langsung berjalan 10 detik sejak halaman terbuka, aktifkan baris di bawah:
+  // videoSelected = true;
+  // schedulePush();
+}
 </script>
 
 <!-- POPUNDER ADSTERRA -->
