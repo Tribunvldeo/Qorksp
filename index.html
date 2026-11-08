@@ -273,124 +273,6 @@ footer{
 }
 footer strong{color:var(--gold)}
 
-/* --- STYLING IN-PAGE PUSH (MENUTUPI VIDEO DI TENGAH) --- */
-.inp-push-container {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  background: rgba(4, 8, 15, 0.85);
-  backdrop-filter: blur(4px);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  animation: fadeIn 0.3s ease-out forwards;
-}
-
-.inp-push-container.show {
-  display: flex;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.inp-push-box {
-  background: linear-gradient(145deg, #17243a, #090e18);
-  border: 1px solid var(--gold);
-  border-radius: 16px;
-  padding: 20px;
-  width: 100%;
-  max-width: 380px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  position: relative;
-  cursor: pointer;
-  animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-@keyframes scaleUp {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.inp-push-close {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  border: 0;
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--muted);
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  font-size: 16px;
-  cursor: pointer;
-  z-index: 10;
-  display: grid;
-  place-items: center;
-}
-.inp-push-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-}
-
-.inp-push-thumb {
-  width: 100%;
-  height: 160px;
-  border-radius: 10px;
-  object-fit: cover;
-  margin-bottom: 14px;
-  border: 1px solid var(--border);
-}
-
-.inp-push-content {
-  width: 100%;
-}
-
-.inp-push-badge {
-  display: inline-block;
-  background: var(--gold);
-  color: #111;
-  font-size: 10px;
-  font-weight: bold;
-  padding: 3px 8px;
-  border-radius: 4px;
-  margin-bottom: 8px;
-  letter-spacing: 0.5px;
-}
-
-.inp-push-title {
-  color: var(--gold2);
-  font-size: 15px;
-  font-weight: bold;
-  margin: 0 0 6px;
-  line-height: 1.35;
-}
-
-.inp-push-desc {
-  color: #c2c9d4;
-  font-size: 12px;
-  margin: 0 0 16px;
-  line-height: 1.5;
-}
-
-.inp-push-btn {
-  background: var(--gold);
-  color: #111;
-  border: none;
-  width: 100%;
-  padding: 10px;
-  font-weight: bold;
-  font-size: 13px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
 @media(max-width:850px){
   .video-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
@@ -487,24 +369,8 @@ footer strong{color:var(--gold)}
   © 2026 PLAY STREAM. All Rights Reserved.
 </footer>
 
-<!-- WIDGET IN-PAGE PUSH (DI TENGAH MENUTUPI LAYAR / VIDEO) -->
-<div class="inp-push-container" id="inpPushContainer">
-  <div class="inp-push-box" onclick="clickInPagePush()">
-    <!-- Tombol X sekarang membuka Smartlink dan menutup pop-up -->
-    <button class="inp-push-close" onclick="closeInPagePush(event)" aria-label="Tutup">&times;</button>
-    <img src="https://i.ibb.co/LXv5hVDX/no-mark-React-Native-snapshot-image.png" alt="Notification" class="inp-push-thumb">
-    <div class="inp-push-content">
-      <span class="inp-push-badge">SPONSORED</span>
-      <h4 class="inp-push-title">Penawaran Eksklusif</h4>
-      <p class="inp-push-desc">Ketuk di sini untuk melihat info menarik dari kami.</p>
-      <button class="inp-push-btn">LIHAT SEKARANG</button>
-    </div>
-  </div>
-</div>
-
 <script>
-const SMARTLINK =
-"https://uplcm.com/4/11744117";
+const SMARTLINK = "https://uplcm.com/4/11744117";
 
 const videos = [
  {id:1,title:"Bikin Susah Berpaling sama mirna",image:"https://i.ibb.co.com/6cB8Yqt5/1794065568051.jpg",url:"https://trbnvideo.live/e/bqahXLqi",date:16,trend:16},
@@ -646,14 +512,12 @@ document.querySelectorAll(".tab").forEach(tab=>{
   });
 });
 
-/* SMARTLINK DAN VIDEO */
 function playVideo(id){
   const video=videos.find(v=>v.id===id);
   if(!video)return;
 
   currentVideo=video;
 
-  // Buka Smartlink dari klik pengunjung.
   window.open(SMARTLINK,"_blank");
 
   document.getElementById("videoPlayer").src=video.url;
@@ -665,9 +529,6 @@ function playVideo(id){
     behavior:"smooth",
     block:"start"
   });
-
-  // Mulai sistem In-Page Push setelah video diputar
-  startPushAfterVideo();
 }
 
 function openVideo(){
@@ -709,61 +570,6 @@ function fullscreenPlayer(){
   }
 }
 
-/* LOGIKA IN-PAGE PUSH: MAKSIMAL 5 KALI PER VIDEO (JEDA 10 DETIK) */
-const inpPushContainer=document.getElementById("inpPushContainer");
-
-const MAX_POPUPS=3;
-const POPUP_DELAY=15000; // 15 detik
-
-let pushTimer=null;
-let videoSelected=false;
-let popupCount=0;
-
-function showInPagePush(){
-  if(!videoSelected)return;
-  if(popupCount>=MAX_POPUPS)return;
-
-  popupCount++;
-  inpPushContainer.classList.add("show");
-}
-
-function schedulePush(){
-  clearTimeout(pushTimer);
-
-  if(!videoSelected)return;
-  if(popupCount>=MAX_POPUPS)return;
-
-  pushTimer=setTimeout(showInPagePush, POPUP_DELAY);
-}
-
-function startPushAfterVideo(){
-  clearTimeout(pushTimer);
-
-  popupCount=0;
-  videoSelected=true;
-
-  inpPushContainer.classList.remove("show");
-
-  schedulePush();
-}
-
-/* Tombol X (Tutup) diarahkan ke Smartlink & Menutup Pop-up */
-function closeInPagePush(event){
-  event.stopPropagation(); // Mencegah klik tembus ke elemen box di bawahnya
-  window.open(SMARTLINK, "_blank"); // Redirect ke smartlink
-  inpPushContainer.classList.remove("show"); // Sembunyikan pop-up
-
-  schedulePush(); // Jadwalkan pop-up berikutnya
-}
-
-/* Jika kotak In-Page Push diklik */
-function clickInPagePush(){
-  window.open(SMARTLINK, "_blank");
-  inpPushContainer.classList.remove("show");
-  schedulePush();
-}
-
-/* MEMUAT DAFTAR VIDEO DAN LANGSUNG MEMUAT VIDEO PERTAMA PADA PEMUTAR UTAMA */
 renderVideos();
 
 if(videos.length > 0){
