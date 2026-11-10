@@ -235,13 +235,13 @@ font-size:12px;color:var(--muted);
 margin-bottom:15px;
 }
 
-/* IN PAGE PUSH STYLING (DISETENGAH LAYAR PEMUTAR VIDEO) */
+/* IN PAGE PUSH STYLING (DI TENGAH PEMUTAR VIDEO) */
 .push-area{
-margin:18px 0;padding:15px;
-border:1px solid #e2e8f0;
+margin:15px 0;padding:15px;
+border:1px solid #10b981;
 background:var(--panel);
 border-radius:7px;
-box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+box-shadow: 0 4px 12px rgba(16,185,129,0.15);
 position: relative;
 cursor: pointer;
 display: none; /* Awalnya disembunyikan, muncul setelah 25 detik */
@@ -374,13 +374,7 @@ referrerpolicy="strict-origin-when-cross-origin">
 </iframe>
 </div>
 
-<h2 class="player-title" id="playerTitle">
-Video Title
-</h2>
-
-<div class="player-category" id="playerCategory"></div>
-
-<!-- IN PAGE PUSH DI TENGAH PEMUTAR VIDEO (MUNCUL SETELAH 25 DETIK) -->
+<!-- IN PAGE POSISI TEPAT DI TENGAH PEMUTAR (DI ANTARA IFRAME DAN JUDUL VIDEO) -->
 <section id="pushArea" class="push-area" onclick="triggerSmartLink(event)">
 <div class="push-header">
 <h3>Recommended Content</h3>
@@ -388,6 +382,12 @@ Video Title
 </div>
 <p>Discover more content and recommendations. Click here to explore exclusive offers.</p>
 </section>
+
+<h2 class="player-title" id="playerTitle">
+Video Title
+</h2>
+
+<div class="player-category" id="playerCategory"></div>
 
 </main>
 
@@ -531,7 +531,7 @@ const pushArea = document.getElementById("pushArea");
 pushArea.style.display = "none";
 if(pushTimer) clearTimeout(pushTimer);
 
-// Munculkan in page push setelah durasi 25 detik (25000 milidetik)
+// Munculkan in page push di tengah pemutar setelah durasi 25 detik (25000ms)
 pushTimer = setTimeout(() => {
     pushArea.style.display = "block";
 }, 25000);
