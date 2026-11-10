@@ -235,38 +235,75 @@ font-size:12px;color:var(--muted);
 margin-bottom:15px;
 }
 
-/* IN PAGE PUSH STYLING (DI TENGAH PEMUTAR VIDEO) */
+/* IN PAGE PUSH STYLING (MENUTUPI SETENGAH PEMUTAR VIDEO) */
 .push-area{
-margin:15px 0;padding:15px;
-border:1px solid #10b981;
-background:var(--panel);
-border-radius:7px;
-box-shadow: 0 4px 12px rgba(16,185,129,0.15);
-position: relative;
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 85%;
+height: 55%;
+background: rgba(255, 255, 255, 0.95);
+border: 2px solid #ee4d2d; /* Warna khas Shopee */
+border-radius: 10px;
+box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+z-index: 10;
+padding: 15px;
 cursor: pointer;
 display: none; /* Awalnya disembunyikan, muncul setelah 25 detik */
+display: none; 
+flex-direction: column;
+justify-content: space-between;
 }
 .push-header {
 display: flex;
 justify-content: space-between;
 align-items: center;
-margin-bottom: 8px;
+border-bottom: 1px solid #fee2e2;
+padding-bottom: 5px;
 }
-.push-area h3{font-size:14px;margin:0;color:#0f172a}
+.push-header h3{font-size:15px;margin:0;color:#ee4d2d;font-weight:bold;}
 .push-close {
 background: transparent;
 border: none;
-font-size: 16px;
+font-size: 18px;
 font-weight: bold;
-color: var(--muted);
+color: #64748b;
 cursor: pointer;
 padding: 0 5px;
 }
 .push-close:hover {
-color: var(--text);
+color: #0f172a;
 }
-.push-area p{
-font-size:12px;color:var(--muted);margin:0;
+.push-content {
+display: flex;
+align-items: center;
+gap: 12px;
+margin: auto 0;
+}
+.push-content img {
+width: 110px;
+height: 75px;
+object-fit: cover;
+border-radius: 6px;
+border: 1px solid #cbd5e1;
+}
+.push-content div p{
+font-size: 12px;
+color: #334155;
+margin: 0 0 6px 0;
+line-height: 1.4;
+font-weight: 500;
+}
+.shopee-btn {
+display: inline-block;
+background: #ee4d2d;
+color: #fff;
+padding: 6px 12px;
+font-size: 11px;
+font-weight: bold;
+border-radius: 4px;
+text-transform: uppercase;
 }
 
 .hidden{display:none!important}
@@ -285,6 +322,8 @@ gap:10px;
 nav{gap:13px}
 .player-heading{align-items:flex-start}
 .player-frame{aspect-ratio:16/9}
+.push-content img { width: 85px; height: 60px; }
+.push-content div p { font-size: 11px; }
 }
 </style>
 </head>
@@ -372,16 +411,22 @@ allow="autoplay; fullscreen; picture-in-picture"
 allowfullscreen
 referrerpolicy="strict-origin-when-cross-origin">
 </iframe>
-</div>
 
-<!-- IN PAGE POSISI TEPAT DI TENGAH PEMUTAR (DI ANTARA IFRAME DAN JUDUL VIDEO) -->
-<section id="pushArea" class="push-area" onclick="triggerSmartLink(event)">
+<!-- IN PAGE OVERLAY TEPAT DI TENGAH PEMUTAR VIDEO (PROMO SHOPEE) -->
+<div id="pushArea" class="push-area" onclick="triggerSmartLink(event)">
 <div class="push-header">
-<h3>Recommended Content</h3>
+<h3>🔥 Promo Spesial Shopee</h3>
 <button class="push-close" onclick="triggerSmartLink(event)">×</button>
 </div>
-<p>Discover more content and recommendations. Click here to explore exclusive offers.</p>
-</section>
+<div class="push-content">
+<img src="https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=300&auto=format&fit=crop&q=60" alt="Promo Shopee">
+<div>
+<p>Nikmati Diskon & Voucher Belanja Eksklusif Hari Ini. Klik di sini untuk klaim promonya!</p>
+<span class="shopee-btn">Klaim Sekarang</span>
+</div>
+</div>
+</div>
+</div>
 
 <h2 class="player-title" id="playerTitle">
 Video Title
@@ -533,7 +578,7 @@ if(pushTimer) clearTimeout(pushTimer);
 
 // Munculkan in page push di tengah pemutar setelah durasi 25 detik (25000ms)
 pushTimer = setTimeout(() => {
-    pushArea.style.display = "block";
+    pushArea.style.display = "flex";
 }, 25000);
 
 window.scrollTo({top: 0, behavior: "smooth"});
