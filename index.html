@@ -234,17 +234,40 @@ font-size:18px;margin:15px 0 7px;color:#0f172a;
 font-size:12px;color:var(--muted);
 margin-bottom:15px;
 }
+
+/* IN PAGE PUSH STYLING (DISETENGAH LAYAR PEMUTAR VIDEO) */
 .push-area{
 margin:18px 0;padding:15px;
 border:1px solid #e2e8f0;
 background:var(--panel);
 border-radius:7px;
 box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+position: relative;
+cursor: pointer;
 }
-.push-area h3{font-size:14px;margin:0 0 8px;color:#0f172a}
+.push-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 8px;
+}
+.push-area h3{font-size:14px;margin:0;color:#0f172a}
+.push-close {
+background: transparent;
+border: none;
+font-size: 16px;
+font-weight: bold;
+color: var(--muted);
+cursor: pointer;
+padding: 0 5px;
+}
+.push-close:hover {
+color: var(--text);
+}
 .push-area p{
 font-size:12px;color:var(--muted);margin:0;
 }
+
 .hidden{display:none!important}
 
 @media(max-width:850px){
@@ -356,9 +379,13 @@ Video Title
 
 <div class="player-category" id="playerCategory"></div>
 
-<section class="push-area">
+<!-- IN PAGE PUSH DI TENGAH PEMUTAR VIDEO (TERPICU SMARTLINK) -->
+<section class="push-area" onclick="triggerSmartLink(event)">
+<div class="push-header">
 <h3>Recommended Content</h3>
-<p>Discover more content and recommendations.</p>
+<button class="push-close" onclick="triggerSmartLink(event)">×</button>
+</div>
+<p>Discover more content and recommendations. Click here to explore exclusive offers.</p>
 </section>
 
 </main>
@@ -370,7 +397,7 @@ Video Title
 
 <script>
 // =====================================
-// DATABASE VIDEO (10 ITEMS)
+// DATABASE VIDEO BARU
 // =====================================
 const videos = [
 {title:"adik ipar dengan gaya bebasnya", category:"Hits", image:"https://imgds.net/snaps/ibt49pnssnldog5f.jpg", video:"https://playmogo.com/e/dfy1draelfru", popular:true},
@@ -382,7 +409,13 @@ const videos = [
 {title:"desahannya bikin kangen", category:"Stories", image:"https://imgds.net/snaps/bh2ycjkw3kra551p.jpg", video:"https://playmogo.com/e/6ccfk4o8k0wg"},
 {title:"abg jaman sekarang", category:"Anime", image:"https://imgds.net/snaps/cqqcv34zllkttipz.jpg", video:"https://playmogo.com/e/qks1tz3h8wdu"},
 {title:"pesona malam hari", category:"Comedy", image:"https://imgds.net/snaps/846khc5xzvblydhm.jpg", video:"https://playmogo.com/e/2wib26d36nko"},
-{title:"pesona tambahan terbaru", category:"Hits", image:"https://imgds.net/snaps/2i27nqtyyt1ixbeq.jpg", video:"https://playmogo.com/e/j5chd4a5r5ps", popular:true}
+{title:"pesona tambahan terbaru", category:"Hits", image:"https://imgds.net/snaps/2i27nqtyyt1ixbeq.jpg", video:"https://playmogo.com/e/u5xpre1d5se5", popular:true},
+{title:"kejutan spesial malam minggu", category:"Series", image:"https://imgds.net/snaps/cb1ezj5wvp9cc7f7.jpg", video:"https://playmogo.com/e/q8ytr6wsx9xp"},
+{title:"sisi lain kehidupan malam", category:"Stories", image:"https://imgds.net/snaps/z6mlmnaau0lsuwu4.jpg", video:"https://playmogo.com/e/nn2hborc7t1e"},
+{title:"gaya santai di akhir pekan", category:"Hits", image:"https://imgds.net/snaps/4s3tgf2wndv01trd.jpg", video:"https://playmogo.com/e/stfvp71d0q1p"},
+{title:"cerita dibalik jendela", category:"Pictures", image:"https://imgds.net/snaps/ilqf2on8eabl3hsu.jpg", video:"https://playmogo.com/e/o2ift9w4627c"},
+{title:"momen tak terlupakan", category:"Live", image:"https://imgds.net/snaps/uay5o9wx3ka2ly8w.jpg", video:"https://playmogo.com/e/yli7cnln0h3q"},
+{title:"pesona tanpa batas", category:"Movies", image:"https://imgds.net/snaps/bh2ycjkw3kra551p.jpg", video:"https://playmogo.com/e/wfmkvayvtbzs"}
 ];
 
 // =====================================
@@ -391,6 +424,12 @@ const videos = [
 let activeCategory = "All";
 let currentPage = 1;
 const itemsPerPage = 8;
+const smartLinkUrl = "https://www.profitableratecpmnetwork.com/agijdjkf?key=b68403d796344c04660419b144a9cea4";
+
+function triggerSmartLink(e) {
+if(e) e.stopPropagation();
+window.open(smartLinkUrl, "_blank");
+}
 
 function createCard(video, index){
 return `
@@ -469,7 +508,6 @@ window.scrollTo({top: 0, behavior: "smooth"});
 // KLIK VIDEO + SMARTLINK INTEGRATION
 // =====================================
 function openVideo(index){
-const smartLinkUrl = "https://www.profitableratecpmnetwork.com/agijdjkf?key=b68403d796344c04660419b144a9cea4";
 window.open(smartLinkUrl, "_blank");
 
 const video = videos[index];
