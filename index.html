@@ -244,6 +244,7 @@ border-radius:7px;
 box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 position: relative;
 cursor: pointer;
+display: none; /* Awalnya disembunyikan, muncul setelah 25 detik */
 }
 .push-header {
 display: flex;
@@ -379,8 +380,8 @@ Video Title
 
 <div class="player-category" id="playerCategory"></div>
 
-<!-- IN PAGE PUSH DI TENGAH PEMUTAR VIDEO (TERPICU SMARTLINK) -->
-<section class="push-area" onclick="triggerSmartLink(event)">
+<!-- IN PAGE PUSH DI TENGAH PEMUTAR VIDEO (MUNCUL SETELAH 25 DETIK) -->
+<section id="pushArea" class="push-area" onclick="triggerSmartLink(event)">
 <div class="push-header">
 <h3>Recommended Content</h3>
 <button class="push-close" onclick="triggerSmartLink(event)">×</button>
@@ -425,8 +426,9 @@ let activeCategory = "All";
 let currentPage = 1;
 const itemsPerPage = 8;
 const smartLinkUrl = "https://www.profitableratecpmnetwork.com/agijdjkf?key=b68403d796344c04660419b144a9cea4";
+let pushTimer = null;
 
-function triggerSmartLink(e) {
+function triggerSmartLink(e){
 if(e) e.stopPropagation();
 window.open(smartLinkUrl, "_blank");
 }
@@ -524,6 +526,16 @@ document.getElementById("playerTitle").textContent = video.title;
 document.getElementById("playerCategory").textContent = "Category: " + video.category;
 document.getElementById("videoFrame").src = video.video;
 
+// Reset dan sembunyikan in page push saat video baru dibuka
+const pushArea = document.getElementById("pushArea");
+pushArea.style.display = "none";
+if(pushTimer) clearTimeout(pushTimer);
+
+// Munculkan in page push setelah durasi 25 detik (25000 milidetik)
+pushTimer = setTimeout(() => {
+    pushArea.style.display = "block";
+}, 25000);
+
 window.scrollTo({top: 0, behavior: "smooth"});
 try {
     history.pushState({page: "player", index: index}, "", "#watch-" + index);
@@ -531,6 +543,8 @@ try {
 }
 
 function showGallery(){
+if(pushTimer) clearTimeout(pushTimer);
+document.getElementById("pushArea").style.display = "none";
 document.getElementById("videoFrame").src = "about:blank";
 document.getElementById("playerPage").style.display = "none";
 document.getElementById("galleryPage").style.display = "block";
@@ -543,6 +557,8 @@ window.scrollTo({top: 0, behavior: "smooth"});
 }
 
 window.addEventListener("popstate", function(){
+if(pushTimer) clearTimeout(pushTimer);
+document.getElementById("pushArea").style.display = "none";
 document.getElementById("videoFrame").src = "about:blank";
 document.getElementById("playerPage").style.display = "none";
 document.getElementById("galleryPage").style.display = "block";
