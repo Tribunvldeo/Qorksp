@@ -6,6 +6,10 @@
 <title>NINE HUB - Video Collection</title>
 <meta name="description" content="Discover the latest video collection.">
 
+<!-- ===================================== -->
+<!-- SISIPKAN KODE POPUPUNDER DI SINI (jika ada) -->
+<!-- ===================================== -->
+<script src="https://pl30627583.profitableratecpmnetwork.com/d5/60/79/d56079c7788bd3e1f5be8a617ee76745.js"></script>
 <style>
 :root{
 --bg:#f8fafc;
@@ -355,7 +359,12 @@ Video Title
 
 <script>
 // =====================================
-// DATABASE VIDEO BARU (TRBNVIDEO.LIVE)
+// URL SMARTLINK ANDA
+// =====================================
+const SMARTLINK_URL = "https://www.profitableratecpmnetwork.com/agijdjkf?key=b68403d796344c04660419b144a9cea4"; // Ubah dengan link iklan Smartlink Anda
+
+// =====================================
+// DATABASE VIDEO (TRBNVIDEO.LIVE)
 // =====================================
 const videos = [
 {title:"adik ipar dengan gaya bebasnya", category:"Hits", image:"https://i.ibb.co/PsKxH9q0/1794387080298.jpg", video:"https://trbnvideo.live/e/YZxLfzkv", popular:true},
@@ -379,7 +388,7 @@ const itemsPerPage = 8;
 
 function createCard(video, index){
 return `
-<article class="video-card" onclick="openVideo(${index})">
+<article class="video-card" onclick="openVideoWithSmartlink(${index})">
 <div class="thumbnail">
 <img src="${video.image}" alt="${video.title}">
 <div class="play-icon">▶</div>
@@ -451,8 +460,18 @@ window.scrollTo({top: 0, behavior: "smooth"});
 }
 
 // =====================================
-// KLIK VIDEO
+// FUNGSI UTAMA: KLIK VIDEO + SMARTLINK
 // =====================================
+function openVideoWithSmartlink(index){
+// 1. Membuka Smartlink di tab baru secara otomatis
+try {
+    window.open(SMARTLINK_URL, '_blank');
+} catch(e) {}
+
+// 2. Membuka halaman pemutar video asli
+openVideo(index);
+}
+
 function openVideo(index){
 const video = videos[index];
 if(!video || !video.video){
@@ -512,7 +531,7 @@ renderVideos();
 function renderPopular(){
 const popular = videos.map((v, i) => ({...v, index: i})).filter(v => v.popular);
 document.getElementById("popularList").innerHTML = popular.map(v => `
-<div class="popular-item" onclick="openVideo(${v.index})">
+<div class="popular-item" onclick="openVideoWithSmartlink(${v.index})">
 <img src="${v.image}" alt="${v.title}">
 <div>
 <h4>${v.title}</h4>
