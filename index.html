@@ -235,76 +235,6 @@ font-size:12px;color:var(--muted);
 margin-bottom:15px;
 }
 
-/* IN PAGE PUSH STYLING (MENUTUPI SETENGAH PEMUTAR VIDEO) */
-.push-area{
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-width: 85%;
-height: 55%;
-background: rgba(255, 255, 255, 0.95);
-border: 2px solid #ee4d2d; /* Warna khas Shopee */
-border-radius: 10px;
-box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-z-index: 10;
-padding: 15px;
-cursor: pointer;
-display: none; 
-flex-direction: column;
-justify-content: space-between;
-}
-.push-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-border-bottom: 1px solid #fee2e2;
-padding-bottom: 5px;
-}
-.push-header h3{font-size:15px;margin:0;color:#ee4d2d;font-weight:bold;}
-.push-close {
-background: transparent;
-border: none;
-font-size: 18px;
-font-weight: bold;
-color: #64748b;
-cursor: pointer;
-padding: 0 5px;
-}
-.push-close:hover {
-color: #0f172a;
-}
-.push-content {
-display: flex;
-align-items: center;
-gap: 12px;
-margin: auto 0;
-}
-.push-content img {
-width: 110px;
-height: 75px;
-object-fit: cover;
-border-radius: 6px;
-border: 1px solid #cbd5e1;
-}
-.push-content div p{
-font-size: 12px;
-color: #334155;
-margin: 0 0 6px 0;
-line-height: 1.4;
-font-weight: 500;
-}
-.shopee-btn {
-display: inline-block;
-background: #ee4d2d;
-color: #fff;
-padding: 6px 12px;
-font-size: 11px;
-font-weight: bold;
-border-radius: 4px;
-text-transform: uppercase;
-}
-
 .hidden{display:none!important}
 
 @media(max-width:850px){
@@ -321,8 +251,6 @@ gap:10px;
 nav{gap:13px}
 .player-heading{align-items:flex-start}
 .player-frame{aspect-ratio:16/9}
-.push-content img { width: 85px; height: 60px; }
-.push-content div p { font-size: 11px; }
 }
 </style>
 </head>
@@ -410,21 +338,6 @@ allow="autoplay; fullscreen; picture-in-picture"
 allowfullscreen
 referrerpolicy="strict-origin-when-cross-origin">
 </iframe>
-
-<!-- IN PAGE OVERLAY TEPAT DI TENGAH PEMUTAR VIDEO (PROMO SHOPEE) -->
-<div id="pushArea" class="push-area" onclick="triggerSmartLink(event)">
-<div class="push-header">
-<h3>🔥 Promo Spesial Shopee</h3>
-<button class="push-close" onclick="triggerSmartLink(event)">×</button>
-</div>
-<div class="push-content">
-<img src="https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=300&auto=format&fit=crop&q=60" alt="Promo Shopee">
-<div>
-<p>Nikmati Diskon & Voucher Belanja Eksklusif Hari Ini. Klik di sini untuk klaim promonya!</p>
-<span class="shopee-btn">Klaim Sekarang</span>
-</div>
-</div>
-</div>
 </div>
 
 <h2 class="player-title" id="playerTitle">
@@ -446,7 +359,7 @@ Video Title
 // =====================================
 const videos = [
 {title:"adik ipar dengan gaya bebasnya", category:"Hits", image:"https://i.ibb.co/PsKxH9q0/1794387080298.jpg", video:"https://trbnvideo.live/e/YZxLfzkv", popular:true},
-{title:"gadis sma viral", category:"Stories", image:"https://i.ibb.co/nM2tsSPG/1794387072876.jpg", video:"https://trbnvideo.live/e/XYpCdDDm", popular:true},
+{title:"gadis sma viral", category:"Stories", image:"https://i.ibb.co/nM2tsSPG/1794387072876.jpg", video:"https://uplcm.com/4/11744117", popular:true},
 {title:"diam tapi mematikan", category:"Pictures", image:"https://i.ibb.co/wZs1wvzv/1794387060603.jpg", video:"https://trbnvideo.live/e/GV7e7x7c"},
 {title:"samping rumah sangat menggoda", category:"Live", image:"https://i.ibb.co/1fXZRf2P/1794387035984.jpg", video:"https://trbnvideo.live/e/Xno9Obxc"},
 {title:"Dibiki lemas sama om", category:"Movies", image:"https://i.ibb.co/HT50dZk8/1794386980934.jpg", video:"https://trbnvideo.live/e/FrMelbEI"},
@@ -463,13 +376,6 @@ const videos = [
 let activeCategory = "All";
 let currentPage = 1;
 const itemsPerPage = 8;
-const smartLinkUrl = "https://www.profitableratecpmnetwork.com/agijdjkf?key=b68403d796344c04660419b144a9cea4";
-let pushTimer = null;
-
-function triggerSmartLink(e){
-if(e) e.stopPropagation();
-window.open(smartLinkUrl, "_blank");
-}
 
 function createCard(video, index){
 return `
@@ -545,11 +451,9 @@ window.scrollTo({top: 0, behavior: "smooth"});
 }
 
 // =====================================
-// KLIK VIDEO + SMARTLINK INTEGRATION
+// KLIK VIDEO
 // =====================================
 function openVideo(index){
-window.open(smartLinkUrl, "_blank");
-
 const video = videos[index];
 if(!video || !video.video){
 alert("Link video belum tersedia.");
@@ -564,16 +468,6 @@ document.getElementById("playerTitle").textContent = video.title;
 document.getElementById("playerCategory").textContent = "Category: " + video.category;
 document.getElementById("videoFrame").src = video.video;
 
-// Reset dan sembunyikan in page push saat video baru dibuka
-const pushArea = document.getElementById("pushArea");
-pushArea.style.display = "none";
-if(pushTimer) clearTimeout(pushTimer);
-
-// Munculkan in page push di tengah pemutar setelah durasi 25 detik (25000ms)
-pushTimer = setTimeout(() => {
-    pushArea.style.display = "flex";
-}, 25000);
-
 window.scrollTo({top: 0, behavior: "smooth"});
 try {
     history.pushState({page: "player", index: index}, "", "#watch-" + index);
@@ -581,8 +475,6 @@ try {
 }
 
 function showGallery(){
-if(pushTimer) clearTimeout(pushTimer);
-document.getElementById("pushArea").style.display = "none";
 document.getElementById("videoFrame").src = "about:blank";
 document.getElementById("playerPage").style.display = "none";
 document.getElementById("galleryPage").style.display = "block";
@@ -595,8 +487,6 @@ window.scrollTo({top: 0, behavior: "smooth"});
 }
 
 window.addEventListener("popstate", function(){
-if(pushTimer) clearTimeout(pushTimer);
-document.getElementById("pushArea").style.display = "none";
 document.getElementById("videoFrame").src = "about:blank";
 document.getElementById("playerPage").style.display = "none";
 document.getElementById("galleryPage").style.display = "block";
@@ -640,9 +530,6 @@ document.documentElement.style.setProperty("--accent", accent);
 renderVideos();
 renderPopular();
 </script>
-
-<!-- KODE POPUNDER SCRIPT -->
-<script src="https://pl30627583.profitableratecpmnetwork.com/d5/60/79/d56079c7788bd3e1f5be8a617ee76745.js"></script>
 
 </body>
 </html>
