@@ -230,64 +230,13 @@ position:relative;box-shadow:0 10px 25px rgba(0,0,0,0.1);
 .player-frame{
 width:100%;aspect-ratio:16/9;
 border:0;display:block;background:#000;
-opacity: 0; /* Sembunyikan video asli sebelum iklan selesai */
-transition: opacity 0.5s ease;
 }
-.player-frame.visible {
-opacity: 1; /* Munculkan video setelah semua iklan selesai */
-}
-
 .player-title{
 font-size:18px;margin:15px 0 7px;color:#0f172a;
 }
 .player-category{
 font-size:12px;color:var(--muted);
 margin-bottom:15px;
-}
-
-/* OVERLAY IKLAN MENGAMBANG FULLSCREEN */
-#fullscreenAdOverlay {
-position: absolute;
-top: 0; left: 0; width: 100%; height: 100%;
-background: rgba(0, 0, 0, 0.95);
-z-index: 999;
-display: none;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-cursor: pointer;
-color: #fff;
-text-align: center;
-padding: 20px;
-}
-.ad-banner-box {
-background: #1e293b;
-border: 2px dashed var(--accent);
-padding: 30px;
-border-radius: 12px;
-max-width: 500px;
-width: 100%;
-box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-pointer-events: none; /* Agar klik tetap menembus ke overlay utama */
-}
-.ad-banner-box h2 {
-color: var(--accent);
-margin-top: 0;
-font-size: 22px;
-}
-.ad-banner-box p {
-font-size: 14px;
-color: #cbd5e1;
-margin-bottom: 20px;
-}
-.ad-timer-badge {
-background: var(--accent);
-color: #fff;
-padding: 6px 14px;
-border-radius: 20px;
-font-weight: bold;
-font-size: 13px;
-display: inline-block;
 }
 
 .hidden{display:none!important}
@@ -384,16 +333,7 @@ StreamGallery Player
 </button>
 </div>
 
-<div class="player-box" id="playerBoxContainer">
-<!-- OVERLAY IKLAN MENGAMBANG -->
-<div id="fullscreenAdOverlay" onclick="handleAdClick()">
-<div class="ad-banner-box">
-<h2>SPONSORED CONTENT</h2>
-<p>Klik di bagian manapun untuk melanjutkan ke situs sponsor dan mempercepat pemutaran video.</p>
-<div class="ad-timer-badge" id="adTimerBadge">Iklan akan ditutup dalam 20s</div>
-</div>
-</div>
-
+<div class="player-box">
 <iframe
 id="videoFrame"
 class="player-frame"
@@ -421,7 +361,7 @@ Video Title
 // =====================================
 // URL SMARTLINK ANDA
 // =====================================
-const SMARTLINK_URL = "https://www.profitableratecpmnetwork.com/agijdjkf?key=b68403d796344c04660419b144a9cea4";
+const SMARTLINK_URL = "https://www.profitableratecpmnetwork.com/agijdjkf?key=b68403d796344c04660419b144a9cea4"; // Ubah dengan link iklan Smartlink Anda
 
 // =====================================
 // DATABASE VIDEO (PLAYMOGO.COM)
@@ -448,13 +388,6 @@ const videos = [
 {title:"ekspresi lucunya bikin gemas", category:"Stories", image:"https://i.ibb.co.com/PZBHzDtg/1794590640027.jpg", video:"https://playmogo.com/e/4bl8ld821h7t", popular:true},
 {title:"penutup hari yang berkesan", category:"Movies", image:"https://i.ibb.co.com/fdsv7qVk/1794590649341.jpg", video:"https://playmogo.com/e/fxuh6j1llmn7"}
 ];
-
-// =====================================
-// VARIABEL KONTROL IKLAN MENGAMBANG
-// =====================================
-let adCount = 0; // Menghitung sudah berapa kali iklan muncul (maksimal 3x)
-let adTimerInterval = null;
-let currentVideoSrc = "";
 
 // =====================================
 // TAMPILAN GALERI & PAGINASI
@@ -540,10 +473,12 @@ window.scrollTo({top: 0, behavior: "smooth"});
 // FUNGSI UTAMA: KLIK VIDEO + SMARTLINK
 // =====================================
 function openVideoWithSmartlink(index){
+// 1. Membuka Smartlink di tab baru secara otomatis
 try {
     window.open(SMARTLINK_URL, '_blank');
 } catch(e) {}
 
+// 2. Membuka halaman pemutar video asli
 openVideo(index);
 }
 
@@ -554,91 +489,22 @@ alert("Link video belum tersedia.");
 return;
 }
 
-currentVideoSrc = video.video;
-adCount = 0; // Reset hitungan iklan untuk video baru
-
 document.getElementById("galleryPage").style.display = "none";
 document.getElementById("playerPage").style.display = "block";
 document.querySelector(".search-wrap").style.display = "none";
 
 document.getElementById("playerTitle").textContent = video.title;
 document.getElementById("playerCategory").textContent = "Category: " + video.category;
-
-// Sembunyikan video frame awalnya agar tidak terlihat sebelum 10 detik pertama
-const iframe = document.getElementById("videoFrame");
-iframe.classList.remove("visible");
-iframe.src = "about:blank";
+document.getElementById("videoFrame").src = video.video;
 
 window.scrollTo({top: 0, behavior: "smooth"});
-
 try {
     history.pushState({page: "player", index: index}, "", "#watch-" + index);
 } catch(e) {}
-
-// Mulai hitung mundur 10 detik sebelum iklan pertama muncul
-setTimeout(() => {
-    triggerFullscreenAd();
-}, 10000);
-}
-
-// Fungsi menampilkan iklan layar penuh (muncul 3x, durasi 20 detik)
-function triggerFullscreenAd(){
-if(adCount >= 3) {
-    // Jika iklan sudah muncul 3x, tampilkan video aslinya
-    showActualVideo();
-    return;
-}
-
-adCount++;
-const overlay = document.getElementById("fullscreenAdOverlay");
-const timerBadge = document.getElementById("adTimerBadge");
-overlay.style.display = "flex";
-
-let timeLeft = 20;
-timerBadge.textContent = `Iklan akan ditutup dalam ${timeLeft}s`;
-
-clearInterval(adTimerInterval);
-adTimerInterval = setInterval(() => {
-    timeLeft--;
-    timerBadge.textContent = `Iklan akan ditutup dalam ${timeLeft}s`;
-    if(timeLeft <= 0){
-        clearInterval(adTimerInterval);
-        overlay.style.display = "none";
-        
-        // Jeda sebentar sebelum memunculkan iklan berikutnya (jika belum 3x)
-        if(adCount < 3) {
-            setTimeout(() => {
-                triggerFullscreenAd();
-            }, 5000); // Jeda 5 detik antar iklan
-        } else {
-            showActualVideo();
-        }
-    }
-}, 1000);
-}
-
-// Fungsi ketika iklan diklik di bagian manapun
-function handleAdClick(){
-try {
-    window.open(SMARTLINK_URL, '_blank');
-} catch(e) {}
-}
-
-// Fungsi untuk menampilkan video asli setelah semua rangkaian iklan selesai
-function showActualVideo(){
-const overlay = document.getElementById("fullscreenAdOverlay");
-overlay.style.display = "none";
-
-const iframe = document.getElementById("videoFrame");
-iframe.src = currentVideoSrc;
-iframe.classList.add("visible");
 }
 
 function showGallery(){
-clearInterval(adTimerInterval);
-document.getElementById("fullscreenAdOverlay").style.display = "none";
 document.getElementById("videoFrame").src = "about:blank";
-document.getElementById("videoFrame").classList.remove("visible");
 document.getElementById("playerPage").style.display = "none";
 document.getElementById("galleryPage").style.display = "block";
 document.querySelector(".search-wrap").style.display = "block";
@@ -650,10 +516,7 @@ window.scrollTo({top: 0, behavior: "smooth"});
 }
 
 window.addEventListener("popstate", function(){
-clearInterval(adTimerInterval);
-document.getElementById("fullscreenAdOverlay").style.display = "none";
 document.getElementById("videoFrame").src = "about:blank";
-document.getElementById("videoFrame").classList.remove("visible");
 document.getElementById("playerPage").style.display = "none";
 document.getElementById("galleryPage").style.display = "block";
 document.querySelector(".search-wrap").style.display = "block";
