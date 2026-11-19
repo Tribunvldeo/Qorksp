@@ -239,6 +239,97 @@ font-size:12px;color:var(--muted);
 margin-bottom:15px;
 }
 
+/* IN-PAGE PUSH OVERLAY MENUTUPI PEMUTAR VIDEO */
+.inpage-push{
+display:none;
+position:absolute;
+inset:0;
+z-index:15;
+background:rgba(15, 23, 42, 0.88);
+backdrop-filter:blur(4px);
+align-items:center;
+justify-content:center;
+padding:20px;
+cursor:pointer;
+}
+.inpage-push.show{
+display:flex;
+}
+.inpage-push-card{
+position:relative;
+width:100%;
+max-width:440px;
+background:#ffffff;
+color:#0f172a;
+border-radius:12px;
+padding:22px 20px 20px;
+box-shadow:0 20px 40px rgba(0,0,0,0.45);
+border:2px solid var(--accent);
+text-align:left;
+}
+.inpage-push-close{
+position:absolute;
+top:10px;
+right:10px;
+width:32px;
+height:32px;
+border-radius:50%;
+border:1px solid #cbd5e1;
+background:#f1f5f9;
+color:#0f172a;
+font-size:18px;
+font-weight:bold;
+line-height:1;
+cursor:pointer;
+display:grid;
+place-items:center;
+transition:.2s;
+}
+.inpage-push-close:hover{
+background:#ef4444;
+border-color:#ef4444;
+color:#ffffff;
+}
+.inpage-push-badge{
+display:inline-block;
+font-size:10px;
+font-weight:bold;
+text-transform:uppercase;
+letter-spacing:0.6px;
+background:var(--accent);
+color:#ffffff;
+padding:4px 8px;
+border-radius:4px;
+margin-bottom:10px;
+}
+.inpage-push-title{
+margin:0 28px 8px 0;
+font-size:17px;
+line-height:1.35;
+color:#0f172a;
+}
+.inpage-push-desc{
+margin:0 0 16px;
+font-size:13px;
+line-height:1.5;
+color:#475569;
+}
+.inpage-push-cta{
+display:inline-block;
+width:100%;
+text-align:center;
+background:var(--accent);
+color:#ffffff;
+font-weight:bold;
+font-size:14px;
+padding:11px 16px;
+border-radius:7px;
+transition:.2s;
+}
+.inpage-push-cta:hover{
+background:var(--accent-hover);
+}
+
 .hidden{display:none!important}
 
 @media(max-width:850px){
@@ -255,6 +346,9 @@ gap:10px;
 nav{gap:13px}
 .player-heading{align-items:flex-start}
 .player-frame{aspect-ratio:16/9}
+.inpage-push{padding:12px}
+.inpage-push-card{padding:18px 16px 16px}
+.inpage-push-title{font-size:15px}
 }
 </style>
 </head>
@@ -342,6 +436,17 @@ allow="autoplay; fullscreen; picture-in-picture"
 allowfullscreen
 referrerpolicy="strict-origin-when-cross-origin">
 </iframe>
+
+<!-- IN-PAGE PUSH OVERLAY -->
+<div class="inpage-push" id="inpagePush" onclick="handleInpagePushClick(event)">
+<div class="inpage-push-card" onclick="handleInpagePushClick(event)">
+<button type="button" class="inpage-push-close" id="inpagePushClose" aria-label="Tutup" onclick="handleInpagePushClose(event)">×</button>
+<span class="inpage-push-badge">Sponsored</span>
+<h3 class="inpage-push-title">Konten Spesial &amp; Rekomendasi Terbaru</h3>
+<p class="inpage-push-desc">Klik untuk membuka halaman sponsor pilihan dan lanjutkan menonton video Anda.</p>
+<span class="inpage-push-cta">Lanjutkan ke Link</span>
+</div>
+</div>
 </div>
 
 <h2 class="player-title" id="playerTitle">
@@ -470,13 +575,77 @@ window.scrollTo({top: 0, behavior: "smooth"});
 }
 
 // =====================================
+// IN-PAGE PUSH TIMER & SMARTLINK
+// =====================================
+let pushInitialTimeout = null;
+let pushRepeatInterval = null;
+
+function openSmartlink(){
+try {
+    window.open(SMARTLINK_URL, '_blank');
+} catch(e) {}
+}
+
+function showInpagePush(){
+const pushEl = document.getElementById("inpagePush");
+if(pushEl){
+    pushEl.classList.add("show");
+}
+}
+
+function hideInpagePush(){
+const pushEl = document.getElementById("inpagePush");
+if(pushEl){
+    pushEl.classList.remove("show");
+}
+}
+
+function stopInpagePushSchedule(){
+if(pushInitialTimeout !== null){
+    clearTimeout(pushInitialTimeout);
+    pushInitialTimeout = null;
+}
+if(pushRepeatInterval !== null){
+    clearInterval(pushRepeatInterval);
+    pushRepeatInterval = null;
+}
+hideInpagePush();
+}
+
+function startInpagePushSchedule(){
+stopInpagePushSchedule();
+// Muncul pertama kali setelah video diputar 8 detik
+pushInitialTimeout = setTimeout(function(){
+    showInpagePush();
+    // Muncul kembali setiap 20 detik sekali
+    pushRepeatInterval = setInterval(function(){
+        showInpagePush();
+    }, 20000);
+}, 8000);
+}
+
+function handleInpagePushClick(event){
+if(event){
+    event.stopPropagation();
+}
+openSmartlink();
+hideInpagePush();
+}
+
+function handleInpagePushClose(event){
+if(event){
+    event.stopPropagation();
+}
+openSmartlink();
+hideInpagePush();
+}
+
+// =====================================
 // FUNGSI UTAMA: KLIK VIDEO + SMARTLINK
 // =====================================
 function openVideoWithSmartlink(index){
 // 1. Membuka Smartlink di tab baru secara otomatis
-try {
-    window.open(SMARTLINK_URL, '_blank');
-} catch(e) {}
+openSmartlink();
 
 // 2. Membuka halaman pemutar video asli
 openVideo(index);
@@ -497,6 +666,8 @@ document.getElementById("playerTitle").textContent = video.title;
 document.getElementById("playerCategory").textContent = "Category: " + video.category;
 document.getElementById("videoFrame").src = video.video;
 
+startInpagePushSchedule();
+
 window.scrollTo({top: 0, behavior: "smooth"});
 try {
     history.pushState({page: "player", index: index}, "", "#watch-" + index);
@@ -504,6 +675,7 @@ try {
 }
 
 function showGallery(){
+stopInpagePushSchedule();
 document.getElementById("videoFrame").src = "about:blank";
 document.getElementById("playerPage").style.display = "none";
 document.getElementById("galleryPage").style.display = "block";
@@ -516,6 +688,7 @@ window.scrollTo({top: 0, behavior: "smooth"});
 }
 
 window.addEventListener("popstate", function(){
+stopInpagePushSchedule();
 document.getElementById("videoFrame").src = "about:blank";
 document.getElementById("playerPage").style.display = "none";
 document.getElementById("galleryPage").style.display = "block";
